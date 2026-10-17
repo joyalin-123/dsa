@@ -130,10 +130,36 @@ Suppose you have 1,000 independent numbers, and you need to multiply every numbe
 Explain in two or three sentences why a GPU might process this workload efficiently.
 
 A GPU is highly efficient for this workload because it is designed for massively parallel processing, allowing it to execute the same instruction across thousands of data points simultaneously. Since multiplying each of the 1,000 numbers by two requires the exact same mathematical operation and the numbers are completely independent, a GPU can process all 1,000 multiplications at the same time in parallel, rather than sequentially like a traditional CPU core
+************************************************************************************************************************************************
 
+n % 10 extracts the last digit.
+n / 10 removes the last digit using integer division.
+Repeat until n becomes 0.
 
+*****************************************************************************************************
 
+Functions:
+#include <iostream>
+using namespace std;
 
+int sumDigit(int n){
+    int sum=0;
+    while (n!=0){
+        sum+=n%10;
+        n/=10;
+    }
+    return sum;
+}
+
+int main()
+{
+    int n;
+    cout<<"Enter number: ";
+    cin>>n;
+    cout<<sumDigit(n)<<endl;
+    return 0;
+}
+.................................................................................................
 
 
 

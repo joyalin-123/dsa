@@ -313,10 +313,33 @@ A complete CUDA program would also need to allocate appropriate memory, arrange 
 ***********************************************************************************************************************************************************************************
 
 
+#include <iostream>
+using namespace std;
+int main(){
+    int numbers[5]={1,2,3,4,5};
+    int largest = numbers[0];
+    for (int i = 1; i < 5; i++) {
+        if (numbers[i] > largest) {
+            largest = numbers[i];}
+    }
+    cout<< largest;
+}
+
+*****************************************************************************
+
+string word = "parallel";
+
+cout << word[0] << endl;  // p
+cout << word[1] << endl;  // a
+cout << word.length() << endl;  // 8
 
 
+- word[0] accesses the first character.
+- word.length() gives the number of characters.
+- word[i] lets you access a character using a loop index.
+If you use cin >> word, it reads only until whitespace. To read a full line such as "GPU engineering", use getline(cin, word).
 
-
+******************************************************************************************************************
 
 
 

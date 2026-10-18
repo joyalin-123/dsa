@@ -292,8 +292,7 @@ Important distinction: A thread being launched doesn't guarantee that it perform
 5. Put the code together
 Here's the complete kernel we've been discussing:
 __global__ void squareArray(int* input, int* output, int n) {
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    
+    int i = blockIdx.x * blockDim.x + threadIdx.x;    
     if (i < n) {
         output[i] = input[i] * input[i];
     }

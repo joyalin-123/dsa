@@ -161,8 +161,156 @@ int main()
 }
 .................................................................................................
 
+Lesson: How does a GPU decide which number each thread processes?
+Last time, we learned the following:
+- A thread is an execution unit that runs instructions.
+- A block groups threads together.
+- A grid contains blocks.
+- A kernel describes the work that GPU threads should perform.
+- CUDA is NVIDIA's programming platform for GPU computing.
+Today, we'll connect these concepts to the actual indexing code.
+1. Start with a problem
+Suppose you have ten numbers:
+Input:  [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
+You want to square every number.
+The output should be:
+Output: [4, 9, 16, 25, 36, 49, 64, 81, 100, 121]
+
+We could use a C++ loop:
+for (int i = 0; i < 10; i++) {
+    output[i] = input[i] * input[i];
+}
+
+This loop visits the array indexes one after another.
+A GPU kernel can distribute the calculations across many threads instead.
+But we need to solve one problem:
+How does each thread know which number it is responsible for?
+That's what the global index solves.
+2. Calculate how many threads we launch
+Suppose we choose:
+- 3 blocks
+- 4 threads per block
+The total number of launched threads is:
+\[
+\text{Total threads}
+=
+\text{Number of blocks}
+\times
+\text{Threads per block}
+\]
+Therefore:
+\[
+3\times4=\boxed{12\text{ threads}}
+\]
+We launched 12 threads, even though our array contains only 10 numbers.
+That's allowed. We'll see how to handle the extra threads shortly.
+Visualize the arrangement
+Block	Local thread indexes	Global indexes
+Block 0	    0, 1, 2, 3           	0, 1, 2, 3
+Block 1	    0, 1, 2, 3          	4, 5, 6, 7
+Block 2	    0, 1, 2, 3	            8, 9, 10, 11
 
 
+Notice that the local indexes restart at zero for every block.
+Block 1 has a Thread 0, just like Block 0.
+So local thread indexes alone cannot uniquely identify positions across the entire grid.
+We need a global index.
+3. The global index formula
+Here is the formula again:
+\[
+\boxed{
+i=(\text{blockIdx.x}\times\text{blockDim.x})
++\text{threadIdx.x}
+}
+\]
+Let's translate it into ordinary English.
+CUDA expression	Meaning
+blockIdx.x	Which block am I in?
+blockDim.x	How many threads are in each block?
+threadIdx.x	Which thread am I within my block?
+i	Which array position should I process?
+
+
+Worked example A
+Suppose:
+blockIdx.x = 2;
+blockDim.x = 4;
+threadIdx.x = 1;
+
+First, calculate how many positions come before Block 2:
+\[
+2\times4=8
+\]
+Block 2 therefore starts at global index 8.
+Our thread is Thread 1, so:
+\[
+i=8+1=\boxed{9}
+\]
+That thread processes input[9], the tenth element of the array.
+The number 9 comes from the block's starting position plus the thread's local index.
+Worked example B
+Suppose:
+blockIdx.x = 1;
+blockDim.x = 4;
+threadIdx.x = 2;
+
+Block 1 starts at:
+\[
+1\times4=4
+\]
+Add the local thread index:
+\[
+i=4+2=\boxed{6}
+\]
+The thread processes input[6].
+You're not memorizing random numbers. You're calculating where each thread belongs.
+4. Why do we need if (i < n)?
+Return to our original problem:
+- The array contains 10 elements.
+- Valid indexes are 0 through 9.
+- We launched 12 threads.
+- The global indexes are 0 through 11.
+What happens to the threads with indexes 10 and 11?
+Those positions don't exist in our array.
+This is why CUDA kernels commonly contain a boundary check:
+if (i < n) {
+    output[i] = input[i] * input[i];
+}
+
+Here, n is the number of elements, which is 10.
+Let's test the condition.
+Global index i	Is i < 10 true?	What happens?
+7	Yes	Calculate and store the square
+9	Yes	Calculate and store the square
+10	No	Skip the calculation
+11	No	Skip the calculation
+
+
+The boundary check prevents invalid array access.
+Important distinction: A thread being launched doesn't guarantee that it performs the array calculation. The condition determines whether it does.
+5. Put the code together
+Here's the complete kernel we've been discussing:
+__global__ void squareArray(int* input, int* output, int n) {
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    
+    if (i < n) {
+        output[i] = input[i] * input[i];
+    }
+}
+
+Read it in this order:
+1. __global__ marks the function as a CUDA kernel.
+2. input refers to the input array.
+3. output refers to the output array.
+4. n tells us how many elements exist.
+5. The indexing formula determines each thread's global index.
+6. The if condition checks whether that index is valid.
+7. The multiplication calculates the square and stores it in the output array.
+The kernel doesn't contain a for loop because each thread calculates its own index.
+The GPU manages the collection of threads executing this work.
+A complete CUDA program would also need to allocate appropriate memory, arrange the kernel launch, and handle synchronization and data transfers where necessary.
+***********************************************************************************************************************************************************************************
 
 
 

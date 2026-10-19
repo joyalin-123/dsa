@@ -483,10 +483,69 @@ int main()
 }
 ******************************************************************************************************************************************
 
+##Vector
+That array has a fixed size of five elements. What if you don't know how many numbers the user wants to enter until the program is running?
+That's where vector comes in.
+A vector is a collection that can grow or shrink while your program runs.
 
+synthax
+#include <iostream>
+#include <vector>
+using namespace std;
 
+int main() {
+    vector<int> numbers = {10, 20, 30};
+    numbers.push_back(40);  // Add an element
+    numbers.push_back(50);
+    cout << numbers[0] << endl;    // 10
+    cout << numbers.size() << endl; // 5
+    return 0;
+}
+Notice that vector<int> means a vector storing integers. You can also have vector<double> and vector<string>.
+*******************************************************************************************************************************************
 
+cudaMalloc for allocating device memory and cudaMemcpy for copying data.
 
+****************************************************************************************************************
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main()
+{
+    int n,sum=0;
+    cout<<"Enter the length of the array";
+    cin>>n;
+    vector<int> numbers(n);
+    for (int i=0;i<n;i++){
+        cout<<"Enter the number: ";
+        cin>>numbers[i];
+    }
+    int largest=numbers[0];
+    for (int i=0;i<n;i++){
+        if (numbers[i]>largest){
+            largest=numbers[i];
+        }
+    }   
+    for (int i=0;i<n;i++){
+        sum+=numbers[i];
+    }
+    double average=sum / static_cast<double>(n);
+    cout<<"Largest"<<largest<<endl;
+    cout<<"Aveage: "<<average<<endl;
+    return 0;
+}
+*****************************************************************************************************************
+A C++ vector lives in CPU memory in an ordinary CPU program. A GPU kernel cannot simply assume that this CPU memory is directly usable as its ordinary GPU device memory.
+Suppose you have a vector containing one million numbers.
+- The CPU creates and fills the vector.
+- The GPU needs accessible device memory for the kernel's data.
+- The program allocates the required buffers and transfers data when necessary.
+- The kernel processes the elements.
+- Results are copied back only if the CPU needs them.
+The key idea: managing data is part of GPU programming, not just the calculation itself.
+*********************************************************************************************************************
 
 
 

@@ -548,6 +548,28 @@ The key idea: managing data is part of GPU programming, not just the calculation
 *********************************************************************************************************************
 Big O notion
 
+Method A: Linear search
+O(n)
+Check each number from the beginning until you find 42.
+for (int i = 0; i < n; i++) {
+    if (numbers[i] == 42) {
+        cout << i;
+        break;
+    }
+}
+
+
+In the worst case, you inspect all 1,000 elements.
+
+Method B: Binary search
+O(log n)
+If the vector is sorted, repeatedly inspect the middle and eliminate half the remaining range.
+For 1,000 elements, binary search needs only about 10 halvings to narrow the search to one candidate.
+
+Because Big O describes the growth pattern, not the hardware's speed, the number of operations completed per second, memory bandwidth, or transfer overhead. A GPU may be faster for a large parallel workload, while a small task may finish faster on the CPU because GPU setup and transfers cost time.
+****************************************************************************************************************************************
+
+
 
 
 

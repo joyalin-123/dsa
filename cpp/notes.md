@@ -341,9 +341,82 @@ If you use cin >> word, it reads only until whitespace. To read a full line such
 ******************************************************************************************************************
 
 
+#include <iostream>
+#include <string>
+using namespace std;
 
 
+int main()
+{
+    string word;
+    int vowelcount=0;
+    cout<<"Enter the word"<<endl;
+    cin>>word;
+    for (int i=0;i<word.length();i++){
+        char ch=word[i];
+        if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u' || ch == 'A' || ch == 'E'|| ch == 'I' || ch == 'O' || ch == 'U'){
+            vowelcount+=1;
+        }
+    }
+    cout<< vowelcount;
+    return 0;
+}
+***********************************************************************************************************************
 
+What happens in a complete CUDA program?
+A common pattern is:
+
+CPU memory
+Original input data
+
+GPU memory
+Input and output arrays
+
+GPU kernel
+Threads calculate results
+
+Results
+The CPU program can use the answers when ready
+*****************************************************************************************************************************
+A simplified memory hierarchy:
+
+Registers
+Very small, very fast storage used for values a thread is working with.
+
+Cache / shared memory
+Fast storage that can reduce repeated trips to larger memory. Shared memory can be explicitly managed by threads in a block.
+
+Global GPU memory
+Large memory space used to hold arrays and other data accessible to GPU kernels.
+**************************************************************************************************************************************8
+
+Registers: tiny, very fast storage used by an individual GPU thread for values it is currently working with.
+Global memory: much larger GPU memory where arrays and other data used by kernels can live. It has higher access latency than registers.
+
+global memory is typically GPU memory such as VRAM, not the CPU's ordinary RAM.
+
+********************************************************************************************************************************
+Step 1: CPU memory
+One million numbers are stored in the computer's RAM.
+Copy input data to GPU memory
+
+Step 2: GPU processing
+Many threads process different numbers in parallel.
+Copy results back to CPU memory, if needed
+
+Step 3: Results available to the CPU
+The program can display or use the answers.
+
+he total time is roughly:
+
+
+Let's use an illustrative example, not actual benchmark measurements.
+Activity	        Time
+Copy data to GPU	4 ms
+Calculate on GPU	1 ms
+Copy results back	4 ms
+Total	9 ms
+Even though the calculation takes only 1 ms, the entire job takes 9 ms!
 
 
 

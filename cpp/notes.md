@@ -546,6 +546,8 @@ Suppose you have a vector containing one million numbers.
 - Results are copied back only if the CPU needs them.
 The key idea: managing data is part of GPU programming, not just the calculation itself.
 *********************************************************************************************************************
+Big O notion
+
 
 
 

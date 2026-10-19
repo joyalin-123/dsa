@@ -418,6 +418,98 @@ Copy results back	4 ms
 Total	9 ms
 Even though the calculation takes only 1 ms, the entire job takes 9 ms!
 
+**************************************************************************************************************************
+
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int n,sum=0,pos=0;
+    cout<<"Enter the length of the array";
+    cin>>n;
+    int numbers[n];
+    for (int i=0;i<n;i++){
+        cout<<"Enter the number: ";
+        cin>>numbers[i];
+    }
+    int largest=numbers[0];
+    for (int i=0;i<n;i++){
+        if (numbers[i]>largest){
+            largest=numbers[i];
+        }
+        if (numbers[i]%2==0){
+            sum+=numbers[i];
+        }
+        if (numbers[i]>0){
+            pos+=1;
+        }
+    }
+    cout<<"largest= "<<largest<<endl;
+    cout<<"sum of all even numbers= "<<sum<<endl;
+    cout<<"positive count= "<<pos<<endl;
+    return 0;
+}
+
+***********************************************************************
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+    string word;
+    int check=1;
+    cout<<"Enter the word";
+    cin>>word;
+    int left=0;
+    int right=word.length()-1;
+    for (left;left<right;left++){
+        if (word[left]!=word[right]){
+            check=0;            
+            break;
+        }
+        right--;
+    }  
+    if (check==0){
+        cout<<"it is not a palindrome"<<endl;        
+    }
+    else{
+        cout<<"it is a palindrome"<<endl;
+    }
+    return 0;
+
+}
+******************************************************************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

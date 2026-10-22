@@ -569,12 +569,120 @@ For 1,000 elements, binary search needs only about 10 halvings to narrow the sea
 Because Big O describes the growth pattern, not the hardware's speed, the number of operations completed per second, memory bandwidth, or transfer overhead. A GPU may be faster for a large parallel workload, while a small task may finish faster on the CPU because GPU setup and transfers cost time.
 ****************************************************************************************************************************************
 
+For sorting the order:
 
+#include <iostream>
+using namespace std;
 
+int main() {
+    int a[] = {5, 3, 8, 1, 2};
+    int n = 5;
+    return 0;
+    for (int i=0;i<n-1;i++){
+        int min=i;
+        for (int j=i+1;j<n;j++){
+            if (a[min]>a[j]){
+                min=j;
+            }
+        }
+        int temp=a[min];
+        a[min]=a[i];
+        a[i]=temp;
+    }        
+    for (int i = 0; i < n; i++) {
+        cout << a[i] << " ";
+    }
+    return 0;
+}
 
+****************************************************************
 
+In CUDA programming, you'll commonly see two kinds of code:
+- Host code: executes on the CPU.
+- Device code: executes on the GPU, often inside a function called a kernel.
+A kernel is a function designed to run across many GPU threads.
+Step 2: The GPU execution flow
+1
+CPU prepares the input
+Ordinary C++ host code
 
+2
+GPU memory is allocated
+Reserve space for device data
 
+3
+Input is copied to the GPU
+When the input starts in CPU memory
+
+4
+CPU launches the kernel
+Specify the number of blocks and threads
+
+5
+GPU threads execute the work
+Threads process their assigned elements
+
+6
+Results are retrieved
+Copy back to CPU memory if needed
+
+Not every GPU program needs to copy data back after every kernel. If another GPU operation needs the result, it can often stay in device memory.
+
+Step 3: What does a kernel launch mean?
+Think of a kernel as a job description and the launch configuration as the staffing plan.
+
+For example, suppose you want to double 1,000 numbers. You might launch a CUDA kernel with 4 blocks of 256 threads, giving 1,024 launched threads. Some threads will have no valid element to process, so the kernel checks its index:
+
+int i = blockIdx.x * blockDim.x + threadIdx.x;
+if (i < n) {
+    output[i] = 2 * input[i];
+}
+
+- blockIdx.x identifies the block.
+- blockDim.x tells you the number of threads per block.
+- threadIdx.x identifies the thread within that block.
+- i calculates the global index across the entire launch.
+- if (i < n) prevents threads without a valid array element from accessing outside the array.
+You'll learn actual CUDA memory allocation and kernel-launch syntax as we build toward programming on a GPU. For now, understand the execution flow.
+********************************************************************************************************************************************************************
+
+Suppose we want to add two one-bit numbers, \(A\) and \(B\).
+
+The result needs two bits of information:
+- Sum: the result's least significant bit.
+- Carry: whether the addition produces a carry into the next position.
+A half-adder implements:
+Sum=A xor B
+Here, means XOR, which outputs 1 when its inputs differ.
+Carry=A {trianbgle without base} B
+
+| A | B | Sum | Carry |
+|---:|---:|---:|---:|
+| 0 | 0 | 0 | 0 |
+| 0 | 1 | 1 | 0 |
+| 1 | 0 | 1 | 0 |
+| 1 | 1 | 0 | 1 |
+
+The D flip-flop
+A D flip-flop is a basic one-bit storage element. On its active clock edge, it captures the value at its D input and stores it at its Q output.
+
+Imagine:
+- D = 1
+- The active clock edge arrives.
+- Q becomes 1 and retains that value until a later clock event changes it.
+The clock coordinates when the stored value is updated.
+
+A collection of flip-flops can store several bits. For example, eight flip-flops can form an 8-bit register.
+
+A register
+A register stores a group of bits that a processor needs to access quickly.
+For example, an 8-bit register might contain:
+00001101
+That binary value represents 13 in unsigned decimal.
+Registers are important in processors because they hold operands, intermediate results, addresses, and other values needed during computation.
+One important nuance: GPU registers are logical storage resources managed by the compiler and hardware. They are not necessarily implemented as a simple bank of individual flip-flops for every source-level variable.
+
+********************************************************************************************************************
 
 
 

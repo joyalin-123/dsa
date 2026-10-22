@@ -684,8 +684,19 @@ One important nuance: GPU registers are logical storage resources managed by the
 
 ********************************************************************************************************************
 
+Registers
+Very small, very fast storage for values used by computation
 
+Cache / shared memory
+Help keep useful data close to the computing units
 
+Main memory / GPU device memory
+Much larger storage for program data and arrays
+
+Registers hold values used by individual threads.
+Shared memory is a small, fast memory that threads in a block can cooperate through.
+Caches retain useful data to reduce expensive memory accesses.
+Device memory holds large arrays and other data used by GPU kernels.
 
 
 
